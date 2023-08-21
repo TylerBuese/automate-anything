@@ -6,6 +6,7 @@ import Block from "./Blocks/Block";
 import Xarrow, { useXarrow, Xwrapper } from "react-xarrows";
 import toast, { Toaster } from "react-hot-toast";
 import RegularModal from "./Modal/RegularModal";
+import ActionBarButton from "../ActionBar/ActionBarButton";
 
 interface ModalContent {
     Title: string,
@@ -37,7 +38,7 @@ const BuildApp = () => {
         let a = [...arrows];
         a.forEach((arrow, i) => {
             if (arrow.props.end == parseInt(e) || arrow.props.start == parseInt(e))
-                a[i]=<></>
+                a[i] = <></>
             i++
         });
         //a = a.filter(x => x.props.end != parseInt(e) && x.props.start != parseInt(e))
@@ -55,7 +56,7 @@ const BuildApp = () => {
     }
 
     const [dimensions, setDimensions] = useState<Dimensions>({ width: 900, height: 900 })
-    
+
     // const [arrows, setArrows] = useState([<Xarrow  start={""} end={""}/>, <Xarrow start={""} end={""}/>])
     const [message, setMessage] = useState("");
 
@@ -68,10 +69,10 @@ const BuildApp = () => {
         setMessage("Code block added.")
     }
 
-    
+
 
     function setModalClosed() {
-        setModalContent({content: null, hide: true, Title: ""})
+        setModalContent({ content: null, hide: true, Title: "" })
     }
 
     function addArrow(e: any) {
@@ -96,10 +97,10 @@ const BuildApp = () => {
     }, [blockToRemove])
 
     useEffect(() => {
-        setBlocks([<Block key={crypto.randomUUID()} data={{Id: "0", StartPos: { x: 900, y: 10 }, Text: "Start here", Description: "The start of your automation"}} />])
+        setBlocks([<Block key={crypto.randomUUID()} data={{ Id: "0", OpenCodeModal: setModalContent({ Title: "New Action", hide: false, content: <NewAction/>}), StartPos: { x: 900, y: 10 }, Text: "Start here", Description: "The start of your automation" }} />])
     }, [])
 
-    
+
 
 
     return (
@@ -109,22 +110,23 @@ const BuildApp = () => {
                 <div className={`min-w-[${dimensions.width}px] min-h-[${dimensions.height}px] h-[900px] w-full bg-slate-700`}>
                     <BlockController>
                         <Xwrapper>
-                            {blocks}
                             {arrows}
+                            {blocks}
                         </Xwrapper>
                     </BlockController>
 
                 </div>
-                <div className="p-2 columns-1">
-                    {/* Control flow */}
-
-                    {/* Function flow */}
-
-                    <div className="h-20 w-20 bg-slate-200 justify-center items-center flex rounded-md hover:cursor-pointer hover:bg-slate-300">
+                <div className="p-2 flex gap-3">
+                    <ActionBarButton>
                         <div onClick={() => { setModalContent({ hide: false, content: <NewBlock AvailableConnections={blocks} NewBlock={addBlock} NewConnection={addArrow} CloseModal={setModalClosed()} RemoveBlock={removeBlock} />, Title: "New code block" }) }}>
                             New Block
                         </div>
-                    </div>
+                    </ActionBarButton>
+                    <ActionBarButton>
+                        <div>
+                            Get Data
+                        </div>
+                    </ActionBarButton>
 
                 </div>
             </div>
@@ -153,10 +155,10 @@ const NewBlock = (props: NewBlockProps) => {
     function handleSubmit(event: React.SyntheticEvent<HTMLFormElement>) {
         event.preventDefault()
         let thisConnection = props.AvailableConnections.length
-        props.NewBlock([<Block key={crypto.randomUUID()} data={{ Id: thisConnection.toString(), StartPos: { x: 0, y: 0 }, Text: title, Description: description, RemoveBlock: props.RemoveBlock}}/>])
+        props.NewBlock([<Block key={crypto.randomUUID()} data={{ Id: thisConnection.toString(), StartPos: { x: 0, y: 0 }, Text: title, Description: description, RemoveBlock: props.RemoveBlock }} />])
         if (connection != undefined)
-            props.NewConnection([<Xarrow end={thisConnection.toString()} start={connection.toString()}/>])
-        
+            props.NewConnection([<Xarrow end={thisConnection.toString()} start={connection.toString()} />])
+
     }
 
     useEffect(() => {
@@ -179,7 +181,7 @@ const NewBlock = (props: NewBlockProps) => {
                         </div>
                         <div className="x">
                             <label htmlFor="description" className="font-bold text-xl w-full">Connected to...</label>
-                            <select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {setConnection(parseInt(e.target.value))}} className="w-full border-2 rounded-md bg-slate-200 p-4 hover:bg-slate-300 focus::bg-slate-300 ">
+                            <select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => { setConnection(parseInt(e.target.value)) }} className="w-full border-2 rounded-md bg-slate-200 p-4 hover:bg-slate-300 focus::bg-slate-300 ">
                                 <option className="text-center text-xl">None</option>
                                 {props.AvailableConnections.filter(x => x.props.data != undefined).map((x) => <option value={x.props.data.Id} className="text-center text-xl">{x.props.data.Text}</option>)}
                             </select>
@@ -191,6 +193,14 @@ const NewBlock = (props: NewBlockProps) => {
                     </form>
                 </div>
             </div>
+        </>
+    )
+}
+
+const NewAction = () => {
+    return (
+        <>
+
         </>
     )
 }

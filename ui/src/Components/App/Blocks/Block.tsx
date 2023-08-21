@@ -7,7 +7,12 @@ interface Block {
     Id: string,
     Text: string,
     Description?: string,
-    RemoveBlock?: (e: string) => void
+    RemoveBlock: (e: string) => void
+    action?: {
+        code: string,
+        actionName: string,
+    }
+    OpenCodeModal: void
 }
 
 interface Props {
@@ -16,6 +21,7 @@ interface Props {
 
 const Block = (props: Props) => {
     const arrow = useXarrow();
+    
 
     useEffect(() => {
         arrow()
@@ -37,9 +43,9 @@ const Block = (props: Props) => {
                     <div className="border-b-2">{props.data.Text}</div>
                     <div className="text-xs">{props.data.Description}</div>
                     <div className="bottom-0 absolute">
-                        {props.data.Id != "0" ?  <i onClick={() => {props.data.RemoveBlock(props.data.Id)}} className="fa-solid fa-trash hover:cursor-default pr-2"></i> : null}
+                        {props.data.Id != "0" ? <i onClick={() => {props.data.RemoveBlock(props.data.Id)}} className="fa-solid fa-trash hover:cursor-default pr-2"></i> : null}
                         <i className="fa-solid fa-turn-up pr-2  hover:cursor-default"></i>
-                        <i className="fa-solid fa-code  pr-2  hover:cursor-default"></i>
+                        <i onClick={() => {props.data.OpenCodeModal(props.data.Id)}} className="fa-solid fa-code  pr-2  hover:cursor-default"></i>
                     </div>
                 </div>
                 
